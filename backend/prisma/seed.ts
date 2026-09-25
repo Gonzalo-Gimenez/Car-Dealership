@@ -2,43 +2,69 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const vehicles = [
-  { slug: 'aurelia-a', name: 'Aurelia A', line: 'core', bodyType: 'hatchback', tagline: 'Urban precision', certified: false },
-  { slug: 'aurelia-c', name: 'Aurelia C', line: 'core', bodyType: 'sedan', tagline: 'Executive sedan', certified: false },
-  { slug: 'aurelia-e', name: 'Aurelia E', line: 'core', bodyType: 'sedan', tagline: 'Long-wheelbase comfort', certified: false },
-  { slug: 'aurelia-s', name: 'Aurelia S', line: 'atelier', bodyType: 'sedan', tagline: 'Grand limousine', certified: false },
-  { slug: 'glaurelia', name: 'GL Aurelia', line: 'core', bodyType: 'suv', tagline: 'Compact SUV', certified: false },
-  { slug: 'glb-aurelia', name: 'GLB Aurelia', line: 'core', bodyType: 'suv', tagline: 'Versatile SUV', certified: false },
-  { slug: 'glc-aurelia', name: 'GLC Aurelia', line: 'core', bodyType: 'suv', tagline: 'Midsize SUV', certified: false },
-  { slug: 'glc-coupe', name: 'GLC Coupé Aurelia', line: 'sport', bodyType: 'suv', tagline: 'Sculpted roofline', certified: false },
-  { slug: 'gle-aurelia', name: 'GLE Aurelia', line: 'core', bodyType: 'suv', tagline: 'Family flagship SUV', certified: false },
-  { slug: 'g-aurelia', name: 'G Aurelia', line: 'sport', bodyType: 'suv', tagline: 'Off-road icon', certified: false },
-  { slug: 'cla-coupe', name: 'CLA Coupé', line: 'core', bodyType: 'coupe', tagline: 'Four-door coupé', certified: false },
-  { slug: 'cle-coupe', name: 'CLE Coupé', line: 'sport', bodyType: 'coupe', tagline: 'Performance coupé', certified: false },
-  { slug: 'cle-cabrio', name: 'CLE Cabriolet', line: 'sport', bodyType: 'cabrio', tagline: 'Open-air grand tourer', certified: false },
-  { slug: 'sl-roadster', name: 'SL Roadster', line: 'sport', bodyType: 'cabrio', tagline: 'Roadster heritage', certified: false },
-  { slug: 'v-aurelia', name: 'V Aurelia', line: 'core', bodyType: 'van', tagline: 'Premium van', certified: false },
-  { slug: 'aurelia-c-certified', name: 'Aurelia C', line: 'core', bodyType: 'sedan', tagline: 'Certified pre-owned', certified: true },
-];
-
-const spec = (power: string, fuel: string) => ({
+const spec = (power: string, fuel: string, extra: Record<string, string> = {}) => ({
   power,
   fuel,
-  transmission: '9G automatic',
-  drivetrain: 'AWD optional',
+  transmission: extra.transmission ?? '9G automatic',
+  drivetrain: extra.drivetrain ?? 'AWD optional',
 });
+
+const vehicles = [
+  { slug: 'aurelia-a', name: 'Aurelia A', line: 'core', bodyType: 'hatchback', tagline: 'Precisión urbana', certified: false, power: '163 hp', fuel: 'Nafta' },
+  { slug: 'aurelia-c', name: 'Aurelia C', line: 'core', bodyType: 'sedan', tagline: 'Sedán ejecutivo', certified: false, power: '204 hp', fuel: 'Nafta' },
+  { slug: 'aurelia-e', name: 'Aurelia E', line: 'core', bodyType: 'sedan', tagline: 'Confort de batalla larga', certified: false, power: '258 hp', fuel: 'Nafta' },
+  { slug: 'aurelia-s', name: 'Aurelia S', line: 'core', bodyType: 'sedan', tagline: 'Flagship de la marca', certified: false, power: '367 hp', fuel: 'Nafta' },
+  { slug: 'atelier-s', name: 'Atelier S', line: 'atelier', bodyType: 'limousine', tagline: 'Grand limousine', certified: false, power: '496 hp', fuel: 'Nafta', extra: { drivetrain: 'AWD' } },
+  { slug: 'gl-aurelia', name: 'GL Aurelia', line: 'core', bodyType: 'suv', tagline: 'SUV compacto', certified: false, power: '163 hp', fuel: 'Nafta' },
+  { slug: 'glb-aurelia', name: 'GLB Aurelia', line: 'core', bodyType: 'suv', tagline: 'SUV versátil', certified: false, power: '190 hp', fuel: 'Nafta' },
+  { slug: 'glc-aurelia', name: 'GLC Aurelia', line: 'core', bodyType: 'suv', tagline: 'SUV mediano', certified: false, power: '258 hp', fuel: 'Nafta' },
+  { slug: 'glc-coupe', name: 'GLC Coupé', line: 'sport', bodyType: 'suv', tagline: 'Techo esculpido', certified: false, power: '367 hp', fuel: 'Nafta', extra: { drivetrain: 'AWD' } },
+  { slug: 'gle-aurelia', name: 'GLE Aurelia', line: 'core', bodyType: 'suv', tagline: 'SUV familiar de bandera', certified: false, power: '375 hp', fuel: 'Nafta', extra: { drivetrain: 'AWD' } },
+  { slug: 'gle-coupe', name: 'GLE Coupé', line: 'sport', bodyType: 'suv', tagline: 'SUV coupé de performance', certified: false, power: '429 hp', fuel: 'Nafta', extra: { drivetrain: 'AWD' } },
+  { slug: 'g-aurelia', name: 'G Aurelia', line: 'sport', bodyType: 'suv', tagline: 'Ícono off-road', certified: false, power: '421 hp', fuel: 'Nafta', extra: { drivetrain: 'AWD lock' } },
+  { slug: 'cla-coupe', name: 'CLA Coupé', line: 'core', bodyType: 'coupe', tagline: 'Coupé de cuatro puertas', certified: false, power: '190 hp', fuel: 'Nafta' },
+  { slug: 'cle-coupe', name: 'CLE Coupé', line: 'sport', bodyType: 'coupe', tagline: 'Coupé de performance', certified: false, power: '381 hp', fuel: 'Nafta', extra: { drivetrain: 'AWD' } },
+  { slug: 'sport-gt-43', name: 'Sport GT 43', line: 'sport', bodyType: 'coupe', tagline: 'Gran turismo', certified: false, power: '421 hp', fuel: 'Nafta', extra: { drivetrain: 'RWD', transmission: '8G DCT' } },
+  { slug: 'sport-gt-63', name: 'Sport GT 63', line: 'sport', bodyType: 'coupe', tagline: 'GT de pista', certified: false, power: '585 hp', fuel: 'Nafta', extra: { drivetrain: 'AWD', transmission: '8G DCT' } },
+  { slug: 'cle-cabrio', name: 'CLE Cabriolet', line: 'sport', bodyType: 'cabrio', tagline: 'Grand tourer a cielo abierto', certified: false, power: '381 hp', fuel: 'Nafta' },
+  { slug: 'sl-roadster', name: 'SL Roadster', line: 'sport', bodyType: 'cabrio', tagline: 'Herencia roadster', certified: false, power: '476 hp', fuel: 'Nafta', extra: { drivetrain: 'RWD' } },
+  { slug: 'v-aurelia', name: 'V Aurelia', line: 'core', bodyType: 'van', tagline: 'Van premium', certified: false, power: '237 hp', fuel: 'Diésel', extra: { drivetrain: 'RWD' } },
+  { slug: 'aurelia-a-electra', name: 'Aurelia A Electra', line: 'electra', bodyType: 'hatchback', tagline: 'Urbano a batería', certified: false, power: '150 kW', fuel: 'Eléctrico', extra: { transmission: '1G', drivetrain: 'FWD' } },
+  { slug: 'glc-electra', name: 'GLC Electra', line: 'electra', bodyType: 'suv', tagline: 'SUV eléctrico', certified: false, power: '250 kW', fuel: 'Eléctrico', extra: { transmission: '1G', drivetrain: 'AWD' } },
+  { slug: 'aurelia-c-certified', name: 'Aurelia C', line: 'core', bodyType: 'sedan', tagline: 'Usado certificado', certified: true, power: '204 hp', fuel: 'Nafta' },
+];
 
 async function main() {
   for (const v of vehicles) {
+    const extra = 'extra' in v && v.extra ? v.extra : {};
+    const coverBySlug: Record<string, string> = {
+      'aurelia-c-certified': '/vehicles/aurelia-c.png',
+      'aurelia-a-electra': '/vehicles/aurelia-a.png',
+      'glc-electra': '/vehicles/glc-aurelia.png',
+    };
+    const coverPath = coverBySlug[v.slug] ?? `/vehicles/${v.slug}.png`;
     await prisma.vehicleModel.upsert({
       where: { slug: v.slug },
       create: {
-        ...v,
+        slug: v.slug,
+        name: v.name,
+        line: v.line,
+        bodyType: v.bodyType,
+        tagline: v.tagline,
+        certified: v.certified,
         description: `${v.name} is part of the fictional Aurelia lineup for demonstration only.`,
-        specs: spec('250 hp', v.line === 'electra' ? 'Electric' : 'Petrol'),
-        coverPath: `/vehicles/${v.slug}.jpg`,
+        specs: spec(v.power, v.fuel, extra),
+        coverPath,
       },
-      update: {},
+      update: {
+        name: v.name,
+        line: v.line,
+        bodyType: v.bodyType,
+        tagline: v.tagline,
+        certified: v.certified,
+        specs: spec(v.power, v.fuel, extra),
+        coverPath,
+      },
     });
   }
 

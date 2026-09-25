@@ -1,8 +1,20 @@
 @import "tailwindcss";
 
+:root {
+  --pasarela-bg: #07080c;
+}
+
 @theme inline {
   --font-serif: var(--font-serif);
   --font-sans: var(--font-sans);
+}
+
+.pasarela-stage {
+  background: var(--pasarela-bg);
+}
+
+.pasarela-nav {
+  background: color-mix(in oklab, var(--pasarela-bg) 70%, transparent);
 }
 
 .field {

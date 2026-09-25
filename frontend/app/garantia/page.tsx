@@ -1,13 +1,18 @@
-import { ContentPageLoader } from "@/components/ContentPageLoader";
+import { ContentSection } from "@/components/ContentSection";
 import { InquiryForm } from "@/components/InquiryForm";
+import { getContent } from "@/lib/api";
 
-export default function GarantiaPage() {
+export default async function GarantiaPage() {
+  const c = await getContent("garantia");
   return (
-    <>
-      <ContentPageLoader slug="garantia" />
-      <div className="mx-auto max-w-3xl px-6 pb-24">
-        <InquiryForm />
-      </div>
-    </>
+    <ContentSection
+      title={c.title}
+      kicker={c.kicker}
+      body={c.body}
+      image={c.image}
+      imageAlt={c.imageAlt}
+    >
+      <InquiryForm />
+    </ContentSection>
   );
 }

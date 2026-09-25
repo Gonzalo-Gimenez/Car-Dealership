@@ -6,23 +6,31 @@ import { getDealers, postAppointment, type Dealer } from "@/lib/api";
 export function AppointmentForm() {
   const [dealers, setDealers] = useState<Dealer[]>([]);
   const [ok, setOk] = useState(false);
+  const [err, setErr] = useState("");
 
   useEffect(() => {
-    getDealers().then(setDealers).catch(() => setDealers([]));
+    getDealers()
+      .then(setDealers)
+      .catch(() => setDealers([]));
   }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setErr("");
     const fd = new FormData(e.currentTarget);
-    await postAppointment({
-      dealerId: Number(fd.get("dealerId")),
-      contactName: String(fd.get("contactName")),
-      email: String(fd.get("email")),
-      phone: String(fd.get("phone")),
-      serviceType: String(fd.get("serviceType")),
-      date: String(fd.get("date")),
-    });
-    setOk(true);
+    try {
+      await postAppointment({
+        dealerId: Number(fd.get("dealerId")),
+        contactName: String(fd.get("contactName")),
+        email: String(fd.get("email")),
+        phone: String(fd.get("phone")),
+        serviceType: String(fd.get("serviceType")),
+        date: String(fd.get("date")),
+      });
+      setOk(true);
+    } catch {
+      setErr("No se pudo agendar. Probá de nuevo.");
+    }
   }
 
   if (ok) {
@@ -31,6 +39,7 @@ export function AppointmentForm() {
 
   return (
     <form onSubmit={onSubmit} className="mt-8 grid gap-4">
+      {err ? <p className="text-amber-400">{err}</p> : null}
       <select name="dealerId" required className="field">
         {dealers.map((d) => (
           <option key={d.id} value={d.id}>

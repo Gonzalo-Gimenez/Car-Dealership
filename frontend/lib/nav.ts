@@ -2,9 +2,10 @@ export const NAV = {
   modelos: [
     { label: "Hatchbacks", href: "/modelos?bodyType=hatchback" },
     { label: "Sedán", href: "/modelos?bodyType=sedan" },
-    { label: "SUV", href: "/modelos?bodyType=suv" },
+    { label: "SUV y Todoterreno", href: "/modelos?bodyType=suv" },
     { label: "Coupés", href: "/modelos?bodyType=coupe" },
-    { label: "Cabriolet", href: "/modelos?bodyType=cabrio" },
+    { label: "Cabriolet y Roadster", href: "/modelos?bodyType=cabrio" },
+    { label: "Grand Limousine", href: "/modelos?bodyType=limousine" },
     { label: "Vans", href: "/modelos?bodyType=van" },
   ],
   asesorate: [
@@ -42,3 +43,12 @@ export const NAV = {
     { label: "Política", href: "/politica" },
   ],
 };
+
+export const NAV_GROUPS = [
+  { title: "Modelos", links: NAV.modelos },
+  { title: "Asesorate", links: NAV.asesorate },
+  { title: "Servicios", links: NAV.servicios },
+  { title: "Nuestras marcas", links: NAV.marcas },
+  { title: "Tecnología", links: NAV.tecnologia },
+  { title: "Empresa", links: NAV.empresa },
+] as const;

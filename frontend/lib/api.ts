@@ -1,59 +1,41 @@
+import { filterAccessories, type Accessory } from "@/lib/accessories";
+import { filterCatalog, findCatalog, type Vehicle } from "@/lib/catalog";
+import { getLocalContent, type ContentPage } from "@/lib/content";
+import { DEALERS, type Dealer } from "@/lib/dealers";
+
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
-export type Vehicle = {
-  id: number;
-  slug: string;
-  name: string;
-  line: string;
-  bodyType: string;
-  tagline: string;
-  description: string;
-  specs: Record<string, string>;
-  coverPath: string;
-  certified: boolean;
-};
-
-export type Dealer = {
-  id: number;
-  name: string;
-  city: string;
-  address: string;
-  phone: string;
-  lat: number;
-  lng: number;
-};
-
-async function get<T>(path: string): Promise<T> {
-  const res = await fetch(`${API}${path}`, { cache: "no-store" });
-  if (!res.ok) throw new Error(path);
-  return res.json() as Promise<T>;
-}
+export type { Vehicle, Accessory, ContentPage, Dealer };
 
 export async function getVehicles(bodyType?: string, certified?: boolean) {
-  const q = new URLSearchParams();
-  if (bodyType) q.set("bodyType", bodyType);
-  if (certified !== undefined) q.set("certified", String(certified));
-  const s = q.toString();
-  return get<Vehicle[]>(`/vehicles${s ? `?${s}` : ""}`);
+  return filterCatalog(bodyType, certified);
 }
 
 export async function getVehicle(slug: string) {
-  return get<Vehicle>(`/vehicles/${slug}`);
+  const local = findCatalog(slug);
+  if (!local) throw new Error(`unknown model ${slug}`);
+  return local;
 }
 
-export async function getDealers() {
-  return get<Dealer[]>("/dealers");
+export async function getDealers(): Promise<Dealer[]> {
+  return DEALERS;
 }
 
-export async function getContent(slug: string) {
-  return get<{ title: string; body: string }>(`/content/${slug}`);
+export async function getContent(slug: string): Promise<ContentPage> {
+  const local = getLocalContent(slug);
+  if (local) return local;
+  return {
+    slug,
+    title: slug,
+    kicker: "",
+    body: "Contenido de demostración no disponible.",
+    image: "/content/showroom.png",
+    imageAlt: slug,
+  };
 }
 
-export async function getAccessories(line?: string) {
-  const q = line ? `?line=${line}` : "";
-  return get<{ id: number; name: string; category: string; priceHint: string }[]>(
-    `/accessories${q}`,
-  );
+export async function getAccessories(line?: string): Promise<Accessory[]> {
+  return filterAccessories(line);
 }
 
 export async function postInquiry(data: {
@@ -63,13 +45,17 @@ export async function postInquiry(data: {
   message: string;
   modelId?: number;
 }) {
-  const res = await fetch(`${API}/inquiries`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("inquiry failed");
-  return res.json();
+  try {
+    const res = await fetch(`${API}/inquiries`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) return res.json();
+  } catch {
+    /* demo succeeds locally */
+  }
+  return { ok: true, local: true };
 }
 
 export async function postAppointment(data: {
@@ -80,13 +66,17 @@ export async function postAppointment(data: {
   serviceType: string;
   date: string;
 }) {
-  const res = await fetch(`${API}/appointments`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("appointment failed");
-  return res.json();
+  try {
+    const res = await fetch(`${API}/appointments`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) return res.json();
+  } catch {
+    /* demo succeeds locally */
+  }
+  return { ok: true, local: true };
 }
 
 export async function getAdminLeads(token: string) {

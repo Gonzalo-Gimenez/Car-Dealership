@@ -22,7 +22,7 @@ export function InquiryForm({ modelId }: { modelId?: number }) {
       setOk(true);
       e.currentTarget.reset();
     } catch {
-      setErr("No se pudo enviar. ¿Está el API en :3000?");
+      setErr("No se pudo enviar. Probá de nuevo.");
     }
   }
 

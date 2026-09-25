@@ -1,20 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { List, X } from "@phosphor-icons/react";
 import { useState } from "react";
-import { NAV } from "@/lib/nav";
-
-const groups = [
-  ["Modelos", NAV.modelos],
-  ["Asesorate", NAV.asesorate],
-  ["Servicios", NAV.servicios],
-  ["Nuestras marcas", NAV.marcas],
-  ["Tecnología", NAV.tecnologia],
-  ["Empresa", NAV.empresa],
-] as const;
+import { NAV_GROUPS } from "@/lib/nav";
 
 export function SiteHeader() {
   const [open, setOpen] = useState<string | null>(null);
+  const [mobile, setMobile] = useState(false);
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/90 backdrop-blur">
@@ -23,7 +16,7 @@ export function SiteHeader() {
           AURELIA
         </Link>
         <nav className="hidden gap-6 lg:flex">
-          {groups.map(([title, links]) => (
+          {NAV_GROUPS.map(({ title, links }) => (
             <div
               key={title}
               className="relative"
@@ -54,13 +47,52 @@ export function SiteHeader() {
             </div>
           ))}
         </nav>
-        <Link
-          href="/consulta"
-          className="hidden rounded border border-white/30 px-4 py-2 text-xs uppercase tracking-wider text-white lg:inline-block"
-        >
-          Consulta
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/consulta"
+            className="hidden rounded border border-white/30 px-4 py-2 text-xs uppercase tracking-wider text-white lg:inline-block"
+          >
+            Consulta
+          </Link>
+          <button
+            type="button"
+            className="inline-flex h-10 w-10 items-center justify-center text-white lg:hidden"
+            aria-label={mobile ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={mobile}
+            onClick={() => setMobile((v) => !v)}
+          >
+            {mobile ? <X size={22} /> : <List size={22} />}
+          </button>
+        </div>
       </div>
+      {mobile ? (
+        <div className="max-h-[80vh] overflow-y-auto border-t border-white/10 bg-black px-6 py-4 lg:hidden">
+          {NAV_GROUPS.map(({ title, links }) => (
+            <div key={title} className="mb-5">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-500">{title}</p>
+              <div className="mt-2 grid gap-1">
+                {links.map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setMobile(false)}
+                    className="py-1.5 text-sm text-zinc-200"
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+          <Link
+            href="/consulta"
+            onClick={() => setMobile(false)}
+            className="mt-2 inline-block border border-white px-4 py-2 text-xs uppercase tracking-wider"
+          >
+            Consulta
+          </Link>
+        </div>
+      ) : null}
     </header>
   );
 }

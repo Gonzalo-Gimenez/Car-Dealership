@@ -1,11 +1,16 @@
 import { AppointmentForm } from "@/components/AppointmentForm";
 import { ContentSection } from "@/components/ContentSection";
+import { getContent } from "@/lib/api";
 
-export default function TurnoPage() {
+export default async function TurnoPage() {
+  const c = await getContent("turno");
   return (
     <ContentSection
-      title="Agendar turno de servicio"
-      body="Elegí concesionario y horario. Demo sin confirmación real."
+      title={c.title}
+      kicker={c.kicker}
+      body={c.body}
+      image={c.image}
+      imageAlt={c.imageAlt}
     >
       <AppointmentForm />
     </ContentSection>
