@@ -33,17 +33,18 @@ Site: http://localhost:3001
 
 ## Deploy on Vercel
 
-Use **one** Vercel project for the website. Import [this repo](https://github.com/Gonzalo-Gimenez/Car-Dealership) and set:
+The site lives in `frontend/`. If you import the GitHub repo as-is, Vercel looks at the root, does not find Next.js, and ships an empty/black page (hero images 404).
 
-| Setting | Value |
-|---|---|
-| Root Directory | `frontend` |
-| Framework | Next.js (auto) |
-| Build | `npm run build` |
+**One project only** — [car-dealership-henna](https://car-dealership-henna.vercel.app/) — no backend project.
 
-If Root Directory stays at the repo root, `vercel.json` builds the Next app from `frontend/`.
+1. Vercel → that project → **Settings → Build and Deployment**.
+2. **Root Directory** → Edit → `frontend` → Save.
+3. Framework Preset: **Next.js** (auto).
+4. **Deployments → ⋮ on the latest → Redeploy** (Production), from branch `main`.
 
-The hashed URL `*.vercel.app` that asks for a Vercel login is a **preview** with Deployment Protection. For a public demo: Project → Settings → Deployment Protection → turn off **Vercel Authentication**, then open the **Production** domain (not the `*-hash-…vercel.app` preview).
+Do not override Install/Build. Leave `NEXT_PUBLIC_API_URL` empty.
+
+The hashed `*-….vercel.app` URL that asks for a Vercel login is a preview with Deployment Protection. Use the Production domain and turn off **Vercel Authentication** if you want it public.
 
 ### Optional API project
 
