@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model VehicleModel {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  line        String
+  bodyType    String
+  tagline     String
+  description String
+  specs       Json
+  coverPath   String
+  certified   Boolean  @default(false)
+  inquiries   Inquiry[]
+}
+
+model Dealer {
+  id        Int           @id @default(autoincrement())
+  name      String
+  city      String
+  address   String
+  phone     String
+  lat       Float
+  lng       Float
+  appointments Appointment[]
+}
+
+model Inquiry {
+  id        Int           @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String
+  message   String
+  modelId   Int?
+  model     VehicleModel? @relation(fields: [modelId], references: [id])
+  createdAt DateTime      @default(now())
+}
+
+model Appointment {
+  id          Int      @id @default(autoincrement())
+  dealerId    Int
+  dealer      Dealer   @relation(fields: [dealerId], references: [id])
+  contactName String
+  email       String
+  phone       String
+  serviceType String
+  date        DateTime
+  createdAt   DateTime @default(now())
+}
+
+model Accessory {
+  id        Int    @id @default(autoincrement())
+  name      String
+  category  String
+  priceHint String
+  line      String @default("collection")
+}
+
+model ContentPage {
+  id    Int    @id @default(autoincrement())
+  slug  String @unique
+  title String
+  body  String
+}
